@@ -1,0 +1,12 @@
+{
+  "eventType": "PUT",
+  "provisioningState": "Succeeded",
+  "plan": {
+    "name": "amalistener",
+    "product": "erccontosoamagpts-preview",
+    "publisher": "test_test_gptsmarketplace1633637382363",
+    "version": "1.0.0"
+  },
+  "applicationId": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/ManagedApplications/providers/microsoft.solutions/applications/ercgptsama1",
+  "eventTime": "2023-01-10T16:52:02.2020401Z"
+}

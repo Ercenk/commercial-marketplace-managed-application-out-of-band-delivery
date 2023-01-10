@@ -1,0 +1,82 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Network/networkSecurityGroups/default-NSG",
+      "location": "westus3",
+      "name": "default-NSG",
+      "type": "Microsoft.Network/networkSecurityGroups"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Storage/storageAccounts/kk676c4bcm5gisawinvm",
+      "kind": "Storage",
+      "location": "westus3",
+      "name": "kk676c4bcm5gisawinvm",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "tags": {},
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Network/publicIPAddresses/myPublicIP",
+      "location": "westus3",
+      "name": "myPublicIP",
+      "sku": {
+        "name": "Basic"
+      },
+      "type": "Microsoft.Network/publicIPAddresses"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Network/virtualNetworks/MyVNET",
+      "location": "westus3",
+      "name": "MyVNET",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Network/networkInterfaces/myVMNic",
+      "location": "westus3",
+      "name": "myVMNic",
+      "type": "Microsoft.Network/networkInterfaces"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Compute/virtualMachines/SimpleWinVM",
+      "identity": {
+        "principalId": "ae133155-8dae-4c7a-99d9-e6e9a973063a",
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "type": "SystemAssigned"
+      },
+      "location": "westus3",
+      "name": "SimpleWinVM",
+      "type": "Microsoft.Compute/virtualMachines"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/MRG-ERCCONTOSO-20230110084736/providers/Microsoft.Compute/disks/SimpleWinVM_OsDisk_1_856357c920ad4fcf97350c176a7d1e3d",
+      "location": "westus3",
+      "managedBy": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Compute/virtualMachines/SimpleWinVM",
+      "name": "SimpleWinVM_OsDisk_1_856357c920ad4fcf97350c176a7d1e3d",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/MRG-ERCCONTOSO-20230110084736/providers/Microsoft.Compute/disks/SimpleWinVM_disk2_d991337da59149c0a15c8f3e0956328f",
+      "location": "westus3",
+      "managedBy": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/providers/Microsoft.Compute/virtualMachines/SimpleWinVM",
+      "name": "SimpleWinVM_disk2_d991337da59149c0a15c8f3e0956328f",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Compute/disks"
+    },
+    {
+      "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/MRG-ERCCONTOSO-20230110084736/providers/Microsoft.Compute/virtualMachines/SimpleWinVM/extensions/MicrosoftMonitoringAgent",
+      "location": "westus3",
+      "name": "SimpleWinVM/MicrosoftMonitoringAgent",
+      "type": "Microsoft.Compute/virtualMachines/extensions"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/ManagedApplications/providers/microsoft.solutions/applications/ercgptsama1",
+  "kind": "MarketPlace",
+  "location": "westus3",
+  "name": "ercgptsama1",
+  "plan": {
+    "name": "amalistener",
+    "product": "erccontosoamagpts-preview",
+    "publisher": "test_test_gptsmarketplace1633637382363",
+    "version": "1.0.0"
+  },
+  "properties": {
+    "authorizations": [
+      {
+        "principalId": "73a34422-b5df-4ff1-92f8-f693949995d1",
+        "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+      },
+      {
+        "principalId": "06c53f7f-c6a9-4a2f-b435-c2647b2ce866",
+        "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+      }
+    ],
+    "createdBy": {
+      "applicationId": "c44b4083-3bb0-49c1-b47d-974e53cbdf3c",
+      "oid": "df30a7e0-98dc-41a6-afa6-d1ddea551529",
+      "puid": "10033FFFA7593A0D"
+    },
+    "customerSupport": {
+      "contactName": "Ercenk Keresteci",
+      "email": "ercenk@microsoft.com",
+      "phone": "14255381196"
+    },
+    "managedResourceGroupId": "/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736",
+    "managementMode": "Managed",
+    "outputs": {
+      "hostname": {
+        "type": "String",
+        "value": "ercgptsama1.westus3.cloudapp.azure.com"
+      }
+    },
+    "parameters": {
+      "adminPassword": {
+        "type": "SecureString"
+      },
+      "adminUsername": {
+        "type": "String",
+        "value": "ercadmin"
+      },
+      "dnsLabelPrefix": {
+        "type": "String",
+        "value": "ercgptsama1"
+      },
+      "location": {
+        "type": "String",
+        "value": "westus3"
+      },
+      "vmSize": {
+        "type": "String",
+        "value": "Standard_D2_v3"
+      },
+      "windowsOSVersion": {
+        "type": "String",
+        "value": "2016-Datacenter"
+      }
+    },
+    "provisioningState": "Succeeded",
+    "publisherTenantId": "9594bc9b-0c11-401a-af25-635a704e250a",
+    "supportUrls": {
+      "publicAzure": "https://privacy.microsoft.com/en-us/privacystatement"
+    },
+    "updatedBy": {
+      "applicationId": "c44b4083-3bb0-49c1-b47d-974e53cbdf3c",
+      "oid": "df30a7e0-98dc-41a6-afa6-d1ddea551529",
+      "puid": "10033FFFA7593A0D"
+    }
+  },
+  "type": "microsoft.solutions/applications"
+}
