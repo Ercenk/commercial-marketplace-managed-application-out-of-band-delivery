@@ -26,20 +26,57 @@ We are covering only the relevant portion of the steps here. Please see the [off
  2. Customer finds the AMA offer on commercial marketplace
  3. Customer designates a resource group for the AMA
  4. AMA is created on the managed application resource group
- 5. A seperate resource group (managed resource group) is created
+ 5. A separate resource group (managed resource group) is created
  6. The resources defined in the ARM template are deployed
  7. The principals defined in step 3 by the publisher can access the managed resource group
 
+ ## Delivering assets to the deployment
+
+ There can be two different methods for achieving this goal.
+ 1. Access the deployment directly, using the primary feature of Azure Managed Applications
+ 2. Include code to pull assets after the deployment.
+
+ We will be covering (1) in the sections below, and will later add (2).
+
+ The high level steps for achieving (1) are:
+
+ 1- [Configure the plan properties for receiving notifications](#getting-notifications-for-the-deployments)
+
+ 2- [Configure authorizations](#configuring-authorizations)
+
+ 3- [Accessing the deployment](#accessing-the-deployment)
+
 ## Getting notifications for the deployments 
 
-During the defintion of the AMA's plan, the technical configuration step has a setting for a "Notification Endpoint URL". The publisher can add a URI to listen on the deployments of AMAs by customers.
+During the definition of the AMA's plan, the technical configuration step has a setting for a "Notification Endpoint URL". The publisher can add a URI to listen on the deployments of AMAs by customers.
 
 ![Notification endpoint](./Media/Notification%20endpoint%20URL.png)
 
-For receiving this notification, you need to expose an endpoint accessible from the internet. Your endpoint URL must end with "resources", for example, you need to do following to be able to receive notifications:
+For receiving the notification, you need to expose an endpoint accessible from the internet. Your endpoint URL must end with "resources", for example, you need to do following to be able to receive notifications:
 
 - If you enter "https://mycompanyapp.com/api" for the Notification Endpoint URL
 - You need listen on https://mycompanyapp.com/api/resources"
+
+You can use a tunnelling solution such as ngrok.io, or [Visual Studio dev tunnels](https://learn.microsoft.com/en-us/connectors/custom-connectors/port-tunneling) for local development and debugging.
+
+## Configuring authorizations 
+
+Right below the "Notification Endpoint URL" field is the "Authorizations" section for each cloud you are publishing to.
+
+You need to add Principal IDs (object IDs for users and groups, and principal ID for service principals of application registrations) to this list with the corresponding roles. We recommend to use AAD groups, and add other objects to those groups on your AAD groups blade.
+
+![authorizations](./Media/Authorizations.png)
+
+## Accessing the deployment
+
+Let's briefly go through the steps for accessing the deployment using Azure CLI. 
+
+1. [Receive notification](#receive-notification)
+2. [Login using the credentials for the principal listed on the authorizations](#login-using-the-credentials-for-the-principal-listed-on-the-authorizations)
+3. [Access managed resource group](#access-managed-resource-group)
+4. [Upload assets to the storage account](#upload-assets-to-the-storage-account)
+
+### Receive notification
 
 The notification payload will look like the following:
 
@@ -60,22 +97,17 @@ The notification payload will look like the following:
 ```
 Please notice the `applicationId` property. We will talk about it more in the following section for accessing the deployment.
 
-## Accessing the deployment 
+Once you receive the notification of a successfully deployment, then you can access the deployment with those authorized principals.
 
-Right below the "Notification Endpoint URL" field is the "Authorizations" section for each cloud you are publishing to.
-
-You need to add Principal IDs (object IDs for users and groups, and principal ID for service principals of applicaiton registrations) to this list with the corresponding roles. We recommend to use AAD groups, and add other objects to those groups on your AAD groups blade.
-
-![authorizations](./Media/Authorizations.png)
-
-Once you receive the notification of a successfull deployment, then you can access the deployment with those authorized principals.
-
+### Login using the credentials for the principal listed on the authorizations
 ```sh
 az login --scope https://management.core.windows.net//.default --allow-no-subscriptions
 
-az rest --method GET --uri /subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/ManagedApplications/providers/microsoft.solutions/applications/ercgptsama1?api-version=2019-07-01
+### Access the managed application properties
+
+az managedapp show --ids /subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/ManagedApplications/providers/microsoft.solutions/applications/ercgptsama1
 ```
- For example, after logging on using a principal in the authorizations list, and calling GET operation on the application like above, will give you the following resoult.
+ For example, after logging on using a principal in the authorizations list, and calling GET operation on the application like above, will give you the following result.
 
  ```json
 {
@@ -159,11 +191,23 @@ az rest --method GET --uri /subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/r
 
  ```
 
+### Access managed resource group
+
+You can use `az group show` to display the properties of the managed resource group by using the value from the `managedResourceGroupId` property above. In this example we can issue the following command to display the resource group properties.
+``` sh
+az group show --name mrg-erccontoso-20230110084736
+```
+
 Then you can use the following command to list the resources on the corresponding managed resource group using the `managedResourceGroupID` property.
 
 ```sh
  az rest --method GET --uri https://management.azure.com/subscriptions/bf9d65ed-6bb8-4ebd-9a81-d36cdf24cf4e/resourceGroups/mrg-erccontoso-20230110084736/resources?api-version=2021-04-01
 
+```
+
+Alternatively, you can use a native command on Azure CLI as follows:
+```sh
+az resource list --resource-group mrg-erccontoso-20230110084736
 ```
 
 Resulting in:
@@ -253,8 +297,14 @@ Resulting in:
 }
 
 ```
+### Upload assets to the storage account
+We can now use the Azure Storage Account commands to upload assets with the command below.
 
-
-
-
-
+```sh
+az storage blob upload \
+    --account-name <storage-account> \
+    --container-name <container> \
+    --name helloworld \
+    --file helloworld \
+    --auth-mode login
+```
