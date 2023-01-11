@@ -1,8 +1,53 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<NotificationListener.Models.DeployedApp>
+
+@{
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProvisioningState)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventTime)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProvisioningState)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventTime)
+                </td>
+            <td>
+                    @if (item.ProvisioningState.ToLower() == "succeeded")
+                    {
+                        @Html.ActionLink("Deploy Bits", "Index", "Upload", new { ApplicationId = item.ApplicationId })
+                    }
+                     
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

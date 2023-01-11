@@ -1,4 +1,4 @@
-﻿@model Subscriptions
+﻿@model IEnumerable<SubscriptionSummary>
 
 @{
     ViewData["Title"] = "Subscriptions";
@@ -6,13 +6,31 @@
 
 <h1>Subscriptions</h1>
 
-<div>
-    <h4>Subscriptions</h4>
-    <hr />
-    <dl class="row">
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DisplayName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubscriptionId)
+            </th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DisplayName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubscriptionId)
+            </td>
+
+
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using System.Diagnostics;
-using System.Reflection;
 using System.Text;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore.Internal;
+using NotificationListener.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,10 +15,12 @@ namespace NotificationListener.Controllers
     public class ResourceController : ControllerBase
     {
         private readonly ILogger<ResourceController> logger;
+        private readonly DataContext dataContext;
 
-        public ResourceController(ILogger<ResourceController> logger)
+        public ResourceController(ILogger<ResourceController> logger, DataContext dataContext)
         {
             this.logger = logger;
+            this.dataContext = dataContext;
         }
         // POST api/<ResourceController>
         [HttpPost]
@@ -28,6 +29,16 @@ namespace NotificationListener.Controllers
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var payload = await reader.ReadToEndAsync();
+                var notificationDetails = JsonSerializer.Deserialize<AMADeploymentNotificationDTO>(payload, new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+
+                await this.dataContext.AddOrUpdate(new DeployedApp
+                {
+                    ApplicationId = notificationDetails.ApplicationId,
+                    EventTime = notificationDetails.EventTime,
+                    EventType = notificationDetails.EventType,
+                    ProvisioningState = notificationDetails.ProvisioningState
+                });
+
                 this.logger.LogInformation($"Received: {payload}");
             }
 

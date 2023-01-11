@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
 using NotificationListener.Models;
@@ -13,17 +14,20 @@ public class HomeController : Controller
     private readonly ITokenAcquisition tokenAcquisition;
     private readonly IArmOperations armOperations;
     private readonly ILogger<HomeController> _logger;
+    private readonly DataContext dataContext;
 
-    public HomeController(ITokenAcquisition tokenAcquisition, IArmOperations armOperations, ILogger<HomeController> logger)
+    public HomeController(ITokenAcquisition tokenAcquisition, IArmOperations armOperations, ILogger<HomeController> logger, DataContext dataContext)
     {
         this.tokenAcquisition = tokenAcquisition;
         this.armOperations = armOperations;
         _logger = logger;
+        this.dataContext = dataContext;
     }
 
     public async Task<IActionResult> Index()
-    {        
-        return View();
+    {
+        var notifications = await this.dataContext.DeployedApplications.OrderByDescending(n => n.EventTime).ToListAsync();
+        return View(notifications);
     }
 
     [HttpGet]
@@ -34,13 +38,9 @@ public class HomeController : Controller
 
         var subscriptions = await this.armOperations.EnumerateSubscriptionsAsync(accessToken);
 
-        return View();
+        return View(subscriptions);
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
 
     [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

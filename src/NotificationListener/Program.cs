@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using Serilog;
+using NotificationListener.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -38,6 +41,9 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.Debug());
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabase")));
 
 var app = builder.Build();
 
