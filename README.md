@@ -33,10 +33,10 @@ We are covering only the relevant portion of the steps here. Please see the [off
  ## Delivering assets to the deployment
 
  There can be two different methods for achieving this goal.
- 1. Access the deployment directly, using the primary feature of Azure Managed Applications
- 2. Include code to pull assets after the deployment.
+ 1. [Access the deployment directly](#accessing-the-deployment-directly), using the primary feature of Azure Managed Applications
+ 2. Include code to [pull assets after the deployment](#solution-pulling-in-the-assets-after-deployment).
 
- We will be covering (1) in the sections below, and will later add (2).
+ We will be covering (1) in the sections below, and will later add (2). This is the native capability of the managed applications. They allow the publisher to access the environment directly and manage them. We will describe the details in the following sections.
 
  The high level steps for achieving (1) are:
 
@@ -46,7 +46,9 @@ We are covering only the relevant portion of the steps here. Please see the [off
 
  3- [Accessing the deployment](#accessing-the-deployment)
 
-## Getting notifications for the deployments 
+## Accessing the deployment directly
+
+### Getting notifications for the deployments 
 
 During the definition of the AMA's plan, the technical configuration step has a setting for a "Notification Endpoint URL". The publisher can add a URI to listen on the deployments of AMAs by customers.
 
@@ -59,7 +61,7 @@ For receiving the notification, you need to expose an endpoint accessible from t
 
 You can use a tunnelling solution such as ngrok.io, or [Visual Studio dev tunnels](https://learn.microsoft.com/en-us/connectors/custom-connectors/port-tunneling) for local development and debugging.
 
-## Configuring authorizations 
+### Configuring authorizations 
 
 Right below the "Notification Endpoint URL" field is the "Authorizations" section for each cloud you are publishing to.
 
@@ -67,7 +69,7 @@ You need to add Principal IDs (object IDs for users and groups, and principal ID
 
 ![authorizations](./Media/Authorizations.png)
 
-## Accessing the deployment
+### Accessing the deployment
 
 Let's briefly go through the steps for accessing the deployment using Azure CLI. 
 
@@ -308,3 +310,42 @@ az storage blob upload \
     --file helloworld \
     --auth-mode login
 ```
+
+## Solution pulling in the assets after deployment
+
+You can include a bootstrapping code to the assets you deploy, if no resource is present for code to run, an alternative can be deploying a Virtual Machine, and code deleting the VM after it runs.
+
+This technique is possible through the [Azure Instance Metadata Service (IMDS)](https://learn.microsoft.com/en-us/azure/virtual-machines/linux/instance-metadata-service?tabs=windows) and system assigned managed identities.
+
+The deployment template needs to include a section that gives reader permission to the resource group. See this [example](https://github.com/Ercenk/commercial-marketplace-managed-application-metering-samples/blob/15b3cb81761321eb4199ce9827b3d037b5286df3/src/system-assigned/mainTemplate.json#L219-L232) for how to implement this.
+
+Assuming there is a Virtual Machine, with a system assigned managed identity, and the MI has read access to the managed resource group, you can then get the status of the deployment using the Azure REST APIs, and upon successful deployment, the code can pull in the assets.
+
+Here is an example of how you can get an access token from the IMDS and call Azure management APIs.
+
+```powershell
+# Get access token from the metadata endpoint
+$managementTokenUrl = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F"
+$Token = Invoke-RestMethod -Headers @{"Metadata" = "true"} -Uri $managementTokenUrl 
+
+# Call the metadata endpoint again to get the subscription and the resource group
+$Headers = @{}
+$Headers.Add("Authorization","$($Token.token_type) "+ " " + "$($Token.access_token)")
+$metadataUrl = "http://169.254.169.254/metadata/instance?api-version=2019-06-01"
+$metadata = Invoke-RestMethod -Headers @{'Metadata'='true'} -Uri $metadataUrl
+
+# Get the details of the resource group
+$managementUrl = "https://management.azure.com/subscriptions/" + $metadata.compute.subscriptionId + "/resourceGroups/" + $metadata.compute.resourceGroupName + "?api-version=2019-10-01"
+$resourceGroupInfo = Invoke-RestMethod -Headers $Headers -Uri $managementUrl
+
+```
+
+You can then call the following REST APIs first to [get the deployments](https://learn.microsoft.com/en-us/rest/api/resources/deployments/list-by-resource-group) on this resource group using the REST API.
+```
+GET https://management.azure.com/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Resources/deployments/?api-version=2021-04-01
+```
+The code can iterate through the returned deployments, find the relevant one, and check the [`ProvisioningState`](https://learn.microsoft.com/en-us/rest/api/resources/deployments/list-by-resource-group#provisioningstate) property's value if it is "Succeeded".
+
+If the deployment is successful, then the code can proceed to pull in additional assets.
+
+A good measure to take is to ensure the deployment indeed succeeded by checking the notification received in the endpoint, before allowing the assets to be pulled in. Please see the relevant section on how to receive the notification.
