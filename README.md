@@ -344,6 +344,13 @@ You can then call the following REST APIs first to [get the deployments](https:/
 ```
 GET https://management.azure.com/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Resources/deployments/?api-version=2021-04-01
 ```
+
+```powershell
+# Get the details of the deployments
+$deploymentsUrl = "https://management.azure.com/subscriptions/" + $metadata.compute.subscriptionId + "/resourceGroups/" + $metadata.compute.resourceGroupName/providers/Microsoft.Resources/deployments/?api-version=2021-04-01 + "?api-version=2021-04-01"
+$deployments = Invoke-RestMethod -Headers $Headers -Uri $deploymentsUrl
+```
+
 The code can iterate through the returned deployments, find the relevant one, and check the [`ProvisioningState`](https://learn.microsoft.com/en-us/rest/api/resources/deployments/list-by-resource-group#provisioningstate) property's value if it is "Succeeded".
 
 If the deployment is successful, then the code can proceed to pull in additional assets.
