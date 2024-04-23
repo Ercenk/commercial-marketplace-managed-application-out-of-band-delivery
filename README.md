@@ -1,4 +1,5 @@
-# Out of band delivery of bits to an Azure Managed Application (AMA) plan deployed from Microsoft Commercial Marketplace
+# DO NOT USE FOR AMAs, THIS TECHNIQUE IS OUT OF POLICY, KEEPING HERE AS AN EXAMPLE OF NESTED ARM TEMPLATES
+
 
 Often times publisher wants to deliver additional bits to an AMA deployment after the customer successfully installs the application, such as configuration files, actual installation files, or any other assets.
 
