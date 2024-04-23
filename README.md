@@ -1,4 +1,4 @@
-# DO NOT USE FOR AMAs, THIS TECHNIQUE IS OUT OF POLICY, KEEPING HERE AS AN EXAMPLE OF NESTED ARM TEMPLATES
+# DO NOT USE FOR AMAs, THIS TECHNIQUE IS OUT OF POLICY, KEEPING HERE AS AN EXAMPLE OF NESTED ARM TEMPLATES AND DOCUMENTING AMAs
 
 
 Often times publisher wants to deliver additional bits to an AMA deployment after the customer successfully installs the application, such as configuration files, actual installation files, or any other assets.
